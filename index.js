@@ -1,24 +1,23 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
-require("dotenv").config();
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
 
-const mongourl = process.env.MONGOURL;
-const client = new MongoClient(mongourl, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    }
-  });
+const { connectDB } = require('./db');
+const deviceRoutes = require('./routes/DevicesRoute');
 
-async function connectDB() {
-  try {
-    await client.connect();
-    console.log("✅ Kết nối MongoDB thành công!");
-  } catch (error) {
-    console.error("❌ Lỗi kết nối MongoDB:", error);
-  } finally {
-    await client.close();
-  }
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.use('/device', deviceRoutes);
+
+async function startServer() {
+    await connectDB('SmartFarm');
+    app.listen(PORT, () => {
+        console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    });
 }
 
-connectDB();
+startServer();
