@@ -20,6 +20,16 @@ const getButtonByName = async (req, res) => {
     }
 }
 
+const createButton = async (req, res) => {
+    try {
+        const button = await buttonService.createButton(req.body);
+        res.status(201).json(button);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+
 const updateButton = async (req, res) => {
     const { button, status } = req.body;
 
@@ -35,4 +45,4 @@ const updateButton = async (req, res) => {
     }
 };
 
-module.exports = { getAllButtons, getButtonByName, updateButton };
+module.exports = { getAllButtons, getButtonByName, createButton, updateButton };

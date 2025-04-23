@@ -19,4 +19,13 @@ const getDeviceByName = async (req, res) => {
     }
 };
 
-module.exports = { getAllDevices, getDeviceByName };
+const createDevice = async (req, res) => {
+    try {
+      const device = await deviceService.createDevice(req.body);
+      res.status(201).json(device);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
+module.exports = { getAllDevices, getDeviceByName, createDevice };

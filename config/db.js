@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
-const MONGO_URL = process.env.MONGO_URL ;
+const MONGO_URL = 'mongodb+srv://naftifine:MultidisciplinaryProject@cluster0.awng8.mongodb.net/SmartFarm?retryWrites=true&w=majority&appName=cluster0' ;
 
 let client;
 let db;

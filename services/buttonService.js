@@ -22,6 +22,32 @@ const getButtonByName = async (name) => {
     }
 }
 
+const createButton = async (newButton) => {
+    try {
+        const db = getDB();
+
+        // Kiểm tra xem Channel đã tồn tại chưa
+        const existingDevice = await db
+            .collection('devices')
+            .findOne({ channel: newButton.channel });
+        if (existingDevice) {
+            throw new Error(`Channel "${newButton.channel}" đã tồn tại trong devices`);
+        }
+        const existingButton = await db
+            .collection('buttons')
+            .findOne({ channel: newButton.channel });
+        if (existingButton) {
+            throw new Error(`Channel "${newButton.channel}" đã tồn tại trong buttons`);
+        }
+
+        newButton.status = "Off"
+        const button = await db.collection('buttons').insertOne(newButton);
+        return button;
+    } catch (err) {
+        throw new Error('Error creating button: ' + err.message);
+    }
+}
+
 const updateButtonStatus = async (name, newStatus) => {
     try {
         const db = getDB();
@@ -55,4 +81,4 @@ const updateButtonStatus = async (name, newStatus) => {
         throw new Error('Error updating: ' + error.message);
     }
 };
-module.exports = { getAllButtons, getButtonByName, updateButtonStatus };
+module.exports = { getAllButtons, getButtonByName, createButton, updateButtonStatus };
