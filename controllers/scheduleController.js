@@ -12,7 +12,7 @@ const createSchedule = async (req, res) => {
 const updateSchedule = async (req, res) => {
     const { scheduleId } = req.params;
     try {
-        const schedule = await scheduleService.updateSchedule(req.body);
+        const schedule = await scheduleService.updateSchedule(scheduleId, req.body);
         res.status(201).json(schedule);
     } catch (err) {
         res.status(500).json({ message: err.message });
