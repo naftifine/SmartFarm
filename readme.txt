@@ -1,2 +1,2 @@
 npm install express
-npm install mongoose mqtt moment bcrypt
+npm install mongoose mqtt moment bcrypt dotenv
