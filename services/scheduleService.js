@@ -25,4 +25,16 @@ const updateSchedule = async (scheduleId, newSchedule) => {
     }
 }
 
-module.exports = { createSchedule, updateSchedule };
+const getScheduleByButtonId = async (buttonId) => {
+    try {
+        const db = getDB();
+        const bnt = await db.collection('buttons').findOne({ _id: new ObjectId(buttonId) });
+        const  sch = await db.collection('schedule').findOne({ channel: bnt.channel });
+        return sch;
+    } catch (err) {
+        throw new Error('Error fetching: ' + err.message);
+    }
+}
+
+
+module.exports = { createSchedule, updateSchedule, getScheduleByButtonId};

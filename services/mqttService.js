@@ -49,36 +49,35 @@ const handleMessage = async (topic, message) => {
         // --- Button logic ---
         const button = await db.collection('buttons').findOne({ channel: topic });
         if (button) {
-        const status = msgStr === '1' ? 'On' : msgStr === '0' ? 'Off' : 'Unknown';
-        const lastLog = (button.log || []).slice(-1)[0];
-        if (!lastLog || lastLog.status !== status) {
-            await db.collection('buttons').updateOne(
-            { _id: button._id },
-            {
-                $set: { status },
-                $push: { log: { status, timestamp: Date.now() } }
+            const status = msgStr === '1' ? 'On' : msgStr === '0' ? 'Off' : 'Unknown';
+            const lastLog = (button.log || []).slice(-1)[0];
+            if (!lastLog || lastLog.status !== status) {
+                await db.collection('buttons').updateOne(
+                { _id: button._id },
+                {
+                    $set: { status },
+                    $push: { log: { status, timestamp: Date.now() } }
+                }
+                );
+                console.log(`Button ${topic} logged status ${status}`);
             }
-            );
-            console.log(`Button ${topic} logged status ${status}`);
-        }
-        return;
+            return;
         }
 
         // --- Device logic ---
         const device = await db.collection('devices').findOne({ channel: topic });
         if (device) {
-        const sensorValue = parseFloat(msgStr);
-        const alarmBtn = await db
-            .collection('buttons')
-            .findOne({ channel: device.button_channel });
+            const sensorValue = parseFloat(msgStr);
+            const alarmBtn = await db
+                .collection('buttons')
+                .findOne({ channel: device.button_channel });
 
-        const publish = (btnChannel, payload) => {
-            mqttClient.publish(btnChannel, payload, { qos: 2, retain: true }, err => {
-            if (err) console.error(`Publish error to ${btnChannel}:`, err);
-            else console.log(`Published ${payload} to ${btnChannel}`);
-            });
+            const publish = (btnChannel, payload) => {
+                mqttClient.publish(btnChannel, payload, { qos: 2, retain: true }, err => {
+                if (err) console.error(`Publish error to ${btnChannel}:`, err);
+                else console.log(`Published ${payload} to ${btnChannel}`);
+                });
         };
-
         // Điều khiển alarm button
         if (alarmBtn) {
             const shouldOn =
@@ -92,8 +91,26 @@ const handleMessage = async (topic, message) => {
             (['Cảm biến ánh sáng', 'Cảm biến độ ẩm đất'].includes(device.name) &&
                 sensorValue > device.lower_threshold);
 
-            if (shouldOn && alarmBtn.status !== 'On') publish(alarmBtn.channel, '1');
-            else if (shouldOff && alarmBtn.status !== 'Off') publish(alarmBtn.channel, '0');
+            if (shouldOn && alarmBtn.status !== 'On') {
+                publish(alarmBtn.channel, '1');
+
+                // THÊM THÔNG BÁO nếu bật cảnh báo
+                await db.collection('notifications').insertOne({
+                    message: `⚠️ ${device.name} cho giá trị ngoài ngưỡng an toàn, đã tự động bật thiết bị ${alarmBtn.name}`,
+                    createdAt: new Date(),
+                    isRead: false
+                });
+            }
+            else if (shouldOff && alarmBtn.status !== 'Off') {
+                publish(alarmBtn.channel, '0');
+                
+                // THÊM THÔNG BÁO nếu bật cảnh báo
+                await db.collection('notifications').insertOne({
+                    message: `⚠️ ${device.name} cho giá trị trong ngưỡng an toàn, đã tự động tắt thiết bị ${alarmBtn.name}`,
+                    createdAt: new Date(),
+                    isRead: false
+                });
+            }
         }
 
         // Lưu log sensor

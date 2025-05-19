@@ -1,10 +1,10 @@
 const { getDB } = require('../config/db');
+const { ObjectId } = require('mongodb');
 
 async function getAllDevices() {
     try {
         const db = getDB();
         const devices = await db.collection('devices').find().toArray();
-        // console.log(devices);
         return devices;
     } catch (error) {
         throw new Error('Error fetching: ' + error.message);
@@ -54,4 +54,18 @@ async function createDevice (newDevice) {
     } 
 }
 
-module.exports = { getAllDevices, getDeviceByName, createDevice };
+const updateDevice = async (deviceId, newDevice) => {
+    try {
+        const db = getDB();
+        const dev = await db.collection('devices').findOne({ _id: new ObjectId(deviceId) });
+        const result = await db.collection('devices').updateOne(
+            { _id: new ObjectId(deviceId) },
+            { $set: newDevice }
+        );
+        return result;
+    } catch (err) {
+        throw new Error('Error updating schedule: ' + err.message);
+    }
+}
+
+module.exports = { getAllDevices, getDeviceByName, createDevice, updateDevice };

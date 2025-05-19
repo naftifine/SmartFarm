@@ -5,9 +5,10 @@ require('dotenv').config();
 const { connectDB } = require('./config/db');
 const deviceRoutes = require('./routes/deviceRoute');
 const buttonRoutes = require('./routes/buttonRoute');
-const scheduleRoutes = require('./routes/scheduleRoute')
-const mqttRoutes = require('./routes/mqttRoute')
-const { startMqttService } = require('./services/mqttService');;
+const scheduleRoutes = require('./routes/scheduleRoute');
+const mqttRoutes = require('./routes/mqttRoute');
+const notificationRoute = require('./routes/notificationRoute');
+const { startMqttService } = require('./services/mqttService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ app.use('/device', deviceRoutes);
 app.use('/button', buttonRoutes);
 app.use('/schedule', scheduleRoutes);
 app.use('/mqtt', mqttRoutes);
+app.use('/notification', notificationRoute);
 
 async function startServer() {
     await connectDB('SmartFarm');

@@ -19,4 +19,15 @@ const updateSchedule = async (req, res) => {
     }
 }
 
-module.exports = { createSchedule, updateSchedule };
+const getScheduleByButtonId = async (req, res) => {
+    const {buttonId} = req.params;
+    try {
+        const schedule = await scheduleService.getScheduleByButtonId(buttonId);
+        res.status(201).json(schedule);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { createSchedule, updateSchedule, getScheduleByButtonId };

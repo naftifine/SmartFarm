@@ -21,11 +21,21 @@ const getDeviceByName = async (req, res) => {
 
 const createDevice = async (req, res) => {
     try {
-      const device = await deviceService.createDevice(req.body);
-      res.status(201).json(device);
+        const device = await deviceService.createDevice(req.body);
+        res.status(201).json(device);
     } catch (err) {
-      res.status(500).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
-  };
+};
 
-module.exports = { getAllDevices, getDeviceByName, createDevice };
+const updateDevice = async (req, res) => {
+    const { deviceId } = req.params;
+    try {
+        const device = await deviceService.updateDevice(deviceId, req.body);
+        res.status(201).json(device);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { getAllDevices, getDeviceByName, createDevice, updateDevice };
