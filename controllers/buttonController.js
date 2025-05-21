@@ -29,7 +29,6 @@ const createButton = async (req, res) => {
     }
 }
 
-
 const updateButton = async (req, res) => {
     const { button, status } = req.body;
 

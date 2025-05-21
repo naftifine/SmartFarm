@@ -117,7 +117,8 @@ const handleMessage = async (topic, message) => {
         await db.collection('devices').updateOne(
             { _id: device._id },
             {
-            $push: { logs: { timestamp: Date.now(), value: sensorValue } }
+                $set: { value: sensorValue },
+                $push: { logs: { timestamp: Date.now(), value: sensorValue } }
             }
         );
         console.log(`Sensor ${device.name} saved value ${sensorValue}`);
