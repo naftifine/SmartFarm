@@ -84,16 +84,15 @@ const handleMessage = async (topic, message) => {
             (['Cảm biến nhiệt độ', 'Cảm biến độ ẩm không khí'].includes(device.name) &&
                 sensorValue > device.upper_threshold) ||
             (['Cảm biến ánh sáng', 'Cảm biến độ ẩm đất'].includes(device.name) &&
-                sensorValue < device.upper_threshold);
+                sensorValue < device.lower_threshold);
             const shouldOff =
             (['Cảm biến nhiệt độ', 'Cảm biến độ ẩm không khí'].includes(device.name) &&
                 sensorValue < device.lower_threshold) ||
             (['Cảm biến ánh sáng', 'Cảm biến độ ẩm đất'].includes(device.name) &&
-                sensorValue > device.lower_threshold);
+                sensorValue > device.upper_threshold);
 
             if (shouldOn && alarmBtn.status !== 'On') {
                 publish(alarmBtn.channel, '1');
-
                 // THÊM THÔNG BÁO nếu bật cảnh báo
                 await db.collection('notifications').insertOne({
                     message: `⚠️ ${device.name} cho giá trị ngoài ngưỡng an toàn, đã tự động bật thiết bị ${alarmBtn.name}`,
