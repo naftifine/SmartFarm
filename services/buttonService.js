@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const { getDB } = require('../config/db');
 
 const getAllButtons = async () => {
@@ -81,4 +82,16 @@ const updateButtonStatus = async (name, newStatus) => {
         throw new Error('Error updating: ' + error.message);
     }
 };
-module.exports = { getAllButtons, getButtonByName, createButton, updateButtonStatus };
+
+const deleteButtonById = async (buttonId) => {
+    try {
+        const db = getDB();
+        const result = await db.collection('buttons').deleteOne({ _id: new ObjectId(buttonId) });
+        return result.deletedCount > 0
+        
+    } catch (error) {
+        console.error('Error deleting button:', error.message);
+    }
+};
+
+module.exports = { getAllButtons, getButtonByName, createButton, updateButtonStatus, deleteButtonById };

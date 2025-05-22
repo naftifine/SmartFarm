@@ -44,4 +44,17 @@ const updateButton = async (req, res) => {
     }
 };
 
-module.exports = { getAllButtons, getButtonByName, createButton, updateButton };
+const deleteButtonById = async (req, res) => {
+    try {
+        const { buttonId } = req.params;
+        const result = await buttonService.deleteButtonById(buttonId);
+        if (!result) {
+            return res.status(404).json({ message: 'Button not found' });
+        }
+        res.json({ message: 'Button deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { getAllButtons, getButtonByName, createButton, updateButton, deleteButtonById };

@@ -36,5 +36,14 @@ const getScheduleByButtonId = async (buttonId) => {
     }
 }
 
+const deleteScheduleById = async (scheduleId) => {
+    try {
+        const db = getDB();
+        const result = await db.collection('schedule').deleteOne({ _id: new ObjectId(scheduleId) });
+        return result.deletedCount > 0
+    } catch (error) {
+        console.error('Error deleting schedule:', error.message);
+    }
+};
 
-module.exports = { createSchedule, updateSchedule, getScheduleByButtonId};
+module.exports = { createSchedule, updateSchedule, getScheduleByButtonId, deleteScheduleById};

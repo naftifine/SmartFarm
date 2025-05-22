@@ -30,4 +30,17 @@ const getScheduleByButtonId = async (req, res) => {
     }
 }
 
-module.exports = { createSchedule, updateSchedule, getScheduleByButtonId };
+const deleteScheduleById = async (req, res) => {
+    try {
+        const { scheduleId } = req.params;
+        const result = await scheduleService.deleteScheduleById(scheduleId);
+        if (!result) {
+            return res.status(404).json({ message: 'Schedule not found' });
+        }
+        res.json({ message: 'Schedule deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { createSchedule, updateSchedule, getScheduleByButtonId, deleteScheduleById };

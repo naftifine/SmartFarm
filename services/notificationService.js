@@ -1,4 +1,5 @@
 const { getDB } = require('../config/db');
+const { ObjectId } = require('mongodb');
 
 const getAllNotification = async () => {
     try {
@@ -33,4 +34,14 @@ const markAllAsRead = async () => {
     }
 };
 
-module.exports = { getAllNotification, getUnreadNotifications, markAllAsRead };
+const deleteNotificationById = async (notificationId) => {
+    try {
+        const db = getDB();
+        const result = await db.collection('notifications').deleteOne({ _id: new ObjectId(notificationId) });
+        return result.deletedCount > 0
+    } catch (error) {
+        console.error('Error deleting notification:', error.message);
+    }
+};
+
+module.exports = { getAllNotification, getUnreadNotifications, markAllAsRead, deleteNotificationById };

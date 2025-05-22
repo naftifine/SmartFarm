@@ -68,4 +68,14 @@ const updateDevice = async (deviceId, newDevice) => {
     }
 }
 
-module.exports = { getAllDevices, getDeviceByName, createDevice, updateDevice };
+const deleteDeviceById = async (deviceId) => {
+    try {
+        const db = getDB();
+        const result = await db.collection('devices').deleteOne({ _id: new ObjectId(deviceId) });
+        return result.deletedCount > 0
+    } catch (error) {
+        console.error('Error deleting device:', error.message);
+    }
+};
+
+module.exports = { getAllDevices, getDeviceByName, createDevice, updateDevice, deleteDeviceById };

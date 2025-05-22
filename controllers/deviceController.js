@@ -38,4 +38,17 @@ const updateDevice = async (req, res) => {
     }
 }
 
-module.exports = { getAllDevices, getDeviceByName, createDevice, updateDevice };
+const deleteDeviceById = async (req, res) => {
+    try {
+        const { deviceId } = req.params;
+        const result = await deviceService.deleteDeviceById(deviceId);
+        if (!result) {
+            return res.status(404).json({ message: 'Device not found' });
+        }
+        res.json({ message: 'Device deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { getAllDevices, getDeviceByName, createDevice, updateDevice, deleteDeviceById };
