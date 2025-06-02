@@ -10,7 +10,7 @@ async function getAllDevices() {
         throw new Error('Error fetching: ' + error.message);
     }
 }
-        
+
 
 async function getDeviceByName(name) {
     try {
@@ -22,10 +22,10 @@ async function getDeviceByName(name) {
     } catch (error) {
         throw new Error('Error fetching: ' + error.message);
     }
-    
+
 }
 
-async function createDevice (newDevice) {
+async function createDevice(newDevice) {
     try {
         const db = getDB();
 
@@ -51,18 +51,20 @@ async function createDevice (newDevice) {
         return device;
     } catch (err) {
         throw new Error('Error creating device: ' + err.message);
-    } 
+    }
 }
 
 const updateDevice = async (deviceId, newDevice) => {
     try {
         const db = getDB();
         const dev = await db.collection('devices').findOne({ _id: new ObjectId(deviceId) });
-        const result = await db.collection('devices').updateOne(
+        await db.collection('devices').updateOne(
             { _id: new ObjectId(deviceId) },
             { $set: newDevice }
         );
-        return result;
+        // Return the updated device document instead of the update operation result
+        const updatedDevice = await db.collection('devices').findOne({ _id: new ObjectId(deviceId) });
+        return updatedDevice;
     } catch (err) {
         throw new Error('Error updating schedule: ' + err.message);
     }

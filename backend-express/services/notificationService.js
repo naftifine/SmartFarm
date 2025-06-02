@@ -1,7 +1,7 @@
 const { getDB } = require('../config/db');
 const { ObjectId } = require('mongodb');
 
-const getAllNotification = async () => {
+const getAllNotifications = async () => {
     try {
         const db = getDB();
         const notifications = await db.collection('notifications').find().toArray();
@@ -44,4 +44,4 @@ const deleteNotificationById = async (notificationId) => {
     }
 };
 
-module.exports = { getAllNotification, getUnreadNotifications, markAllAsRead, deleteNotificationById };
+module.exports = { getAllNotifications, getUnreadNotifications, markAllAsRead, deleteNotificationById };

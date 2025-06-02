@@ -18,4 +18,15 @@ async function login(req, res) {
     }
 }
 
-module.exports = { signup, login };
+async function logout(req, res) {
+    try {
+        // Since we don't have session management in this simple app,
+        // we just return a success response
+        // In a real app with sessions/tokens, we would invalidate them here
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+module.exports = { signup, login, logout };
